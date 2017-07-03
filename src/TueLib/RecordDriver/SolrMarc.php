@@ -6,7 +6,7 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 
-class SolrMarc extends \TueLib\RecordDriver\SolrMarc implements ServiceLocatorAwareInterface
+class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAwareInterface
 {
     protected $serviceLocator;
 
