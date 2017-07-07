@@ -1,5 +1,5 @@
 <?php
-namespace TueLib\Module\Configuration;
+namespace TueLib\Module\Config;
 
 $config = array(
     'controllers' => array(
