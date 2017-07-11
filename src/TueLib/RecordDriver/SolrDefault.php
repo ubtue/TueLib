@@ -18,6 +18,9 @@
  */
 
 namespace TueLib\RecordDriver;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+
 class SolrDefault extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAwareInterface
 {
     protected $serviceLocator;
