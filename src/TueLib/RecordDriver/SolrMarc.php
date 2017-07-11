@@ -2,8 +2,6 @@
 
 namespace TueLib\RecordDriver;
 use VuFind\Exception\LoginRequired as LoginRequiredException;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 class SolrMarc extends \TueLib\RecordDriver\SolrDefault
 {
