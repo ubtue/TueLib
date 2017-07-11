@@ -5,21 +5,8 @@ use VuFind\Exception\LoginRequired as LoginRequiredException;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-
-class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAwareInterface
+class SolrMarc extends \TueLib\RecordDriver\SolrDefault
 {
-    protected $serviceLocator;
-
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator->getServiceLocator();
-    }
-
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
-    }
-    
     /**
      * Get all non-standardized topics
      */
@@ -28,7 +15,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
        return (isset($this->fields['topic_non_standardized'])) ?
             $this->fields['topic_non_standardized'] : '';
     }
-    
+
     /**
      * Get all standardized topics including KWCs
      */
@@ -38,7 +25,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
        return (isset($this->fields['topic_standardized'])) ?
             $this->fields['topic_standardized'] : '';
     }
-    
+
     public function getAllSubjectHeadingsFlat()
     {
         $result     = array();
@@ -48,7 +35,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
         }
         return $result;
     }
-    
+
     public function getAuthorsAsString() {
         $author_implode = function ($array) {
                 if (is_null($array)) {
@@ -60,7 +47,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
             };
         return $author_implode(array_map($author_implode, array_map("array_keys", $this->getDeduplicatedAuthors())));
     }
-    
+
     /**
      * Return an associative array of all container IDs (parents) mapped to their titles containing the record.
      *
@@ -79,7 +66,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
         }
         return $retval;
     }
-    
+
     /**
      * Get the mediatype
      */
@@ -88,17 +75,17 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
         return (isset($this->fields['mediatype'])) ?
              $this->fields['mediatype'] : '';
     }
-    
+
     public function getOtherTitles() {
         return isset($this->fields['other_titles']) ?
             $this->fields['other_titles'] : array();
     }
-    
+
     public function getRecordDriverByPPN($ppn) {
         $recordLoader = $this->getServiceLocator()->get('VuFind\RecordLoader');
         return $recordLoader->load($ppn, 'Solr', false);
     }
-    
+
     /**
      * Get the record ID of the current record.
      *
@@ -109,7 +96,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
         return isset($this->fields['id']) ?
             $this->fields['id'] : '';
     }
-    
+
     public function getReviews()
     {
         $retval = array();
@@ -137,7 +124,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
         }
         return $retval;
     }
-    
+
     public function getSubitoURL($broker_id) {
        $base_url = "http://www.subito-doc.de/preorder/?BI=" . $broker_id;
        switch ($this->getBibliographicLevel()) {
@@ -145,7 +132,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
                $isbn = $this->getCleanISBN();
                if (!empty($isbn))
                    return $base_url . "&SB=" . $isbn;
-               return $base_url . "&CAT=SWB&ND" . $this->getRecordId(); 
+               return $base_url . "&CAT=SWB&ND" . $this->getRecordId();
            case 'Serial':
                $zdb_number = $this->getZDBNumber();
                if (!empty($zdb_number))
@@ -188,7 +175,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
 
        return "";
     }
-    
+
     public function getSuperiorRecord() {
        $_773_field = $this->getMarcRecord()->getField("773");
        if (!$_773_field)
@@ -201,7 +188,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
            return NULL;
        return $this->getRecordDriverByPPN($ppn);
     }
-    
+
     /**
      * Get the full title of the record.
      *
@@ -212,7 +199,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
         $title = $this->getShortTitle();
         $subtitle = $this->getSubtitle();
         $titleSection = $this->getTitleSection();
-        if (!empty($subtitle)) { 
+        if (!empty($subtitle)) {
             if ($title != '') {
                 $separator = preg_match("/^[\\s=]+/", $subtitle) ? " " : " : ";
                 $title .= $separator;
@@ -227,14 +214,14 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
         }
         return $title;
     }
-    
+
     public function getZDBNumber()
     {
         return (isset($this->fields['zdb_number'])) ?
             $this->fields['zdb_number'] : '';
 
     }
-    
+
     public function isAvailableInTubingenUniversityLibrary() {
        $local_fields = $this->getMarcRecord()->getFields("LOK");
        foreach ($local_fields as $local_field) {
@@ -245,7 +232,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
 
        return false;
     }
-    
+
     /** Check whether a record is potentially available for PDA
      *
      * @return bool
@@ -254,7 +241,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
     {
         return $this->fields['is_potentially_pda'];
     }
-    
+
     public function isSuperiorWork() {
         return $this->fields['is_superior_work'];
     }
@@ -262,14 +249,14 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc implements ServiceLocatorAw
     public function isSubscribable() {
         return $this->fields['is_subscribable'];
     }
-    
+
     public function stripTrailingDates($text) {
         $matches = array();
         if (!preg_match("/(\\D*)(\\d{4}).*/", $text, $matches))
             return $text;
         return rtrim($matches[1]);
     }
-    
+
     public function subscribe($params, $user)
     {
         if (!$user) {
