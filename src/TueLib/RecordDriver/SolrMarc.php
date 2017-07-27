@@ -225,13 +225,33 @@ class SolrMarc extends \TueLib\RecordDriver\SolrDefault
        return (count($ita_fields) > 0);
     }
 
+    public function isDependentWork() {
+       $leader = $this->getMarcRecord()->getLeader();
+       // leader[7] is set to 'a' if we have a dependent work
+       return ($leader[7] == 'a') ? true : false;
+    }
+
+    public function isPrintedWork() {
+        $fields = $this->getMarcRecord()->getFields("007");
+        foreach ($fields as $field) {
+            if ($field->getData()[0] == 't')
+                return true;
+        }
+        return false;
+    }
+
+    public function workIsTADCandidate() {
+
+       return $this->isDependentWork() && $this->isPrintedWork() && $this->isAvailableInTubingenUniversityLibrary();
+     }
+
     /** Check whether a record is potentially available for PDA
      *
      * @return bool
      */
     public function isPotentiallyPDA()
     {
-        return $this->fields['is_potentially_pda'];
+        return isset($this->fields['is_potentially_pda']) && $this->fields['is_potentially_pda'];
     }
 
     public function isSuperiorWork() {
