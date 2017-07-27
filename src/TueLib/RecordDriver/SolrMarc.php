@@ -221,13 +221,8 @@ class SolrMarc extends \TueLib\RecordDriver\SolrDefault
     }
 
     public function isAvailableInTubingenUniversityLibrary() {
-       $local_fields = $this->getMarcRecord()->getFields("ITA");
-       foreach ($local_fields as $local_field) {
-           $subfields = $this->getSubfieldArray($local_field, ['0', 'a'], /* $concat = */false);
-           if (count($subfields) == 1 && $subfields[0] == "1")
-               return true;
-       }
-       return false;
+       $ita_fields = $this->getMarcRecord()->getFields("ITA");
+       return (count($ita_fields) > 0);
     }
 
     public function isDependentWork() {
