@@ -75,7 +75,7 @@ class SolrMarc extends \TueLib\RecordDriver\SolrDefault
      *
      * @return array
      */
-    public function getFieldsArray($fields_and_subfields, $concat=true, $separator=' ') {
+    protected function getFieldsArray($fields_and_subfields, $concat=true, $separator=' ') {
         $fields_array = array();
         foreach ($fields_and_subfields as $field_and_subfield) {
             $field = $field_and_subfield[0];
