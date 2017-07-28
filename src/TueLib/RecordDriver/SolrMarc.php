@@ -10,7 +10,7 @@ class SolrMarc extends \TueLib\RecordDriver\SolrDefault
      */
     public function getAllNonStandardizedSubjectHeadings()
     {
-       return (isset($this->fields['topic_non_standardized'])) ?
+        return (isset($this->fields['topic_non_standardized'])) ?
             $this->fields['topic_non_standardized'] : '';
     }
 
@@ -20,7 +20,7 @@ class SolrMarc extends \TueLib\RecordDriver\SolrDefault
 
     public function getAllStandardizedSubjectHeadings()
     {
-       return (isset($this->fields['topic_standardized'])) ?
+        return (isset($this->fields['topic_standardized'])) ?
             $this->fields['topic_standardized'] : '';
     }
 
@@ -36,13 +36,13 @@ class SolrMarc extends \TueLib\RecordDriver\SolrDefault
 
     public function getAuthorsAsString() {
         $author_implode = function ($array) {
-                if (is_null($array)) {
-                    return null;
-                }
-                return implode(", ", array_filter($array, function($entry) {
-                    return empty($entry) ? false : true;
-                }));
-            };
+            if (is_null($array)) {
+                return null;
+            }
+            return implode(", ", array_filter($array, function($entry) {
+                return empty($entry) ? false : true;
+            }));
+        };
         return $author_implode(array_map($author_implode, array_map("array_keys", $this->getDeduplicatedAuthors())));
     }
 
@@ -93,7 +93,7 @@ class SolrMarc extends \TueLib\RecordDriver\SolrDefault
     public function getMediaType()
     {
         return (isset($this->fields['mediatype'])) ?
-             $this->fields['mediatype'] : '';
+            $this->fields['mediatype'] : '';
     }
 
     public function getOtherTitles() {
@@ -146,67 +146,67 @@ class SolrMarc extends \TueLib\RecordDriver\SolrDefault
     }
 
     public function getSubitoURL($broker_id) {
-       $base_url = "http://www.subito-doc.de/preorder/?BI=" . $broker_id;
-       switch ($this->getBibliographicLevel()) {
-           case 'Monograph':
-               $isbn = $this->getCleanISBN();
-               if (!empty($isbn))
-                   return $base_url . "&SB=" . $isbn;
-               return $base_url . "&CAT=SWB&ND" . $this->getRecordId();
-           case 'Serial':
-               $zdb_number = $this->getZDBNumber();
-               if (!empty($zdb_number))
-                   return $base_url . "&ND=" . $zdb_number;
-               $issn = $this->getCleanISSN();
-               if (!empty($issn))
+        $base_url = "http://www.subito-doc.de/preorder/?BI=" . $broker_id;
+        switch ($this->getBibliographicLevel()) {
+            case 'Monograph':
+                $isbn = $this->getCleanISBN();
+                if (!empty($isbn))
+                    return $base_url . "&SB=" . $isbn;
+                return $base_url . "&CAT=SWB&ND" . $this->getRecordId();
+            case 'Serial':
+                $zdb_number = $this->getZDBNumber();
+                if (!empty($zdb_number))
+                    return $base_url . "&ND=" . $zdb_number;
+                $issn = $this->getCleanISSN();
+                if (!empty($issn))
                    return $base_url . "&SS=" . $issn;
-               break;
-           case 'MonographPart':
-           case 'SerialPart':
-               $isbn = $this->getCleanISBN();
-               $issn = $this->getCleanISSN();
-               $title = $this->getTitle();
-               $authors = $this->getDeduplicatedAuthors();
-               $page_range = $this->getPageRange();
-               $volume = $this->getVolume();
-               $issue = $this->getIssue();
-               $year = $this->getYear();;
-               if ((!empty($isbn) || !empty($issn)) && !empty($title) && !empty($authors) && !empty($page_range)
-                   && (!empty($volume) || !empty($issue)) && !empty($year))
-               {
-                   $title = $this->escapeHtml($title);
-                   $author_list = "";
-                   foreach ($authors as $author) {
-                       if (!empty($author_list))
-                           $author_list .= "%3B";
-                       $author_list .= $this->escapeHtml($author);
-                   }
-                   $page_range = $this->escapeHtml($page_range);
+                break;
+            case 'MonographPart':
+            case 'SerialPart':
+                $isbn = $this->getCleanISBN();
+                $issn = $this->getCleanISSN();
+                $title = $this->getTitle();
+                $authors = $this->getDeduplicatedAuthors();
+                $page_range = $this->getPageRange();
+                $volume = $this->getVolume();
+                $issue = $this->getIssue();
+                $year = $this->getYear();;
+                if ((!empty($isbn) || !empty($issn)) && !empty($title) && !empty($authors) && !empty($page_range)
+                    && (!empty($volume) || !empty($issue)) && !empty($year))
+                {
+                    $title = $this->escapeHtml($title);
+                    $author_list = "";
+                    foreach ($authors as $author) {
+                        if (!empty($author_list))
+                            $author_list .= "%3B";
+                        $author_list .= $this->escapeHtml($author);
+                    }
+                    $page_range = $this->escapeHtml($page_range);
 
-                   $volume_and_or_issue = $this->escapeHtml($volume);
-                   if (!empty($volume_and_or_issue))
-                       $volume_and_or_issue .= "%2F";
-                   $volume_and_or_issue .= $this->escapeHtml($issue);
+                    $volume_and_or_issue = $this->escapeHtml($volume);
+                    if (!empty($volume_and_or_issue))
+                        $volume_and_or_issue .= "%2F";
+                    $volume_and_or_issue .= $this->escapeHtml($issue);
 
-                   return $base_url . (!empty($isbn) ? "&SB=" . $isbn : "&SS=" . $issn) . "&ATI=" . $title . "&AAU="
-                          . $author_list . "&PG=" . $page_range . "&APY=" . $year . "&VOL=" . $volume_and_or_issue;
-               }
-       }
+                    return $base_url . (!empty($isbn) ? "&SB=" . $isbn : "&SS=" . $issn) . "&ATI=" . $title . "&AAU="
+                        . $author_list . "&PG=" . $page_range . "&APY=" . $year . "&VOL=" . $volume_and_or_issue;
+                }
+        }
 
-       return "";
+        return "";
     }
 
     public function getSuperiorRecord() {
-       $_773_field = $this->getMarcRecord()->getField("773");
-       if (!$_773_field)
-           return NULL;
-       $subfields = $this->getSubfieldArray($_773_field, ['w'], /* $concat = */false);
-       if (!$subfields)
-           return NULL;
-       $ppn = substr($subfields[0], 8);
-       if (!$ppn || strlen($ppn) != 9)
-           return NULL;
-       return $this->getRecordDriverByPPN($ppn);
+        $_773_field = $this->getMarcRecord()->getField("773");
+        if (!$_773_field)
+            return NULL;
+        $subfields = $this->getSubfieldArray($_773_field, ['w'], /* $concat = */false);
+        if (!$subfields)
+            return NULL;
+        $ppn = substr($subfields[0], 8);
+        if (!$ppn || strlen($ppn) != 9)
+            return NULL;
+        return $this->getRecordDriverByPPN($ppn);
     }
 
     /**
@@ -243,14 +243,14 @@ class SolrMarc extends \TueLib\RecordDriver\SolrDefault
     }
 
     public function isAvailableInTubingenUniversityLibrary() {
-       $ita_fields = $this->getMarcRecord()->getFields("ITA");
-       return (count($ita_fields) > 0);
+        $ita_fields = $this->getMarcRecord()->getFields("ITA");
+        return (count($ita_fields) > 0);
     }
 
     public function isDependentWork() {
-       $leader = $this->getMarcRecord()->getLeader();
-       // leader[7] is set to 'a' if we have a dependent work
-       return ($leader[7] == 'a') ? true : false;
+        $leader = $this->getMarcRecord()->getLeader();
+        // leader[7] is set to 'a' if we have a dependent work
+        return ($leader[7] == 'a') ? true : false;
     }
 
     public function isPrintedWork() {
@@ -263,9 +263,8 @@ class SolrMarc extends \TueLib\RecordDriver\SolrDefault
     }
 
     public function workIsTADCandidate() {
-
-       return $this->isDependentWork() && $this->isPrintedWork() && $this->isAvailableInTubingenUniversityLibrary();
-     }
+        return $this->isDependentWork() && $this->isPrintedWork() && $this->isAvailableInTubingenUniversityLibrary();
+    }
 
     /** Check whether a record is potentially available for PDA
      *
