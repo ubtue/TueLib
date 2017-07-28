@@ -66,6 +66,28 @@ class SolrMarc extends \TueLib\RecordDriver\SolrDefault
     }
 
     /**
+     * Wrapper for parent's getFieldArray, allowing multiple fields to be
+     * processed at once
+     *
+     * @param array $fields_and_subfields array(0 => field as string, 1 => subfields as array or string (string only 1))
+     * @param bool $concat
+     * @param string $separator
+     *
+     * @return array
+     */
+    protected function getFieldsArray($fields_and_subfields, $concat=true, $separator=' ') {
+        $fields_array = array();
+        foreach ($fields_and_subfields as $field_and_subfield) {
+            $field = $field_and_subfield[0];
+            $subfields = (isset($field_and_subfield[1])) ? $field_and_subfield[1] : null;
+            if (!is_null($subfields) && !is_array($subfields)) $subfields = array($subfields);
+            $field_array = $this->getFieldArray($field, $subfields, $concat, $separator);
+            $fields_array = array_merge($fields_array, $field_array);
+        }
+        return array_unique($fields_array);
+    }
+
+    /**
      * Get the mediatype
      */
     public function getMediaType()
