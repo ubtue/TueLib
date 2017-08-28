@@ -11,6 +11,7 @@ namespace TueLib\Controller;
 use VuFind\Exception\Forbidden as ForbiddenException;
 use \Exception as Exception;
 use SimpleXMLElement;
+use Zend\Log\Logger as Logger;
 
 /**
  * This controller is a proxy for requests to BSZ based GVI 
@@ -102,6 +103,8 @@ class PDAProxyController extends \VuFind\Controller\AbstractBase
         $pda_status = $pda_available ? "OFFER_PDA" : "NO_OFFER_PDA";
         $json = json_encode(['isbn' => $isbn,
                              'pda_status' => $pda_status]);
+
+        $this->getServiceLocator()->get('VuFind\Logger')->log(Logger::NOTICE, 'PDALOG for ' . $isbn . ': ' . $pda_status);
 
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
