@@ -319,4 +319,18 @@ class SolrDefault extends \VuFind\RecordDriver\SolrMarc implements ServiceLocato
 
         return $table->unsubscribe($userId, $recordId);
     }
+
+    public function getCleanDOI() {
+        $results = $this->getMarcRecord()->getFields('024');
+        if (!$results)
+            return;
+
+        foreach ($results as $result) {
+            $subfields = $this->getSubfieldArray($result, ['a', '2'], false);
+            if ($subfields && count($subfields) == 2) {
+                if (strtolower($subfields[1]) == 'doi');
+                    return $subfields[0];
+            }
+        }
+    }
 }
